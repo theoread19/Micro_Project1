@@ -1,0 +1,12 @@
+2021-06-29 10:27:53.8669 INFO Fetching all the news from the storage
+2021-06-29 10:58:04.0136 INFO Creating a user to the storage
+2021-06-29 10:58:09.7744 INFO Fetching all the user from the storage
+2021-06-29 11:25:31.9334 INFO Fetching all the user from the storage
+2021-06-29 11:37:48.9304 INFO Fetching all the user from the storage
+2021-06-29 13:20:07.4928 INFO Fetching all the user from the storage
+2021-06-29 13:22:03.1055 INFO Fetching all the user from the storage
+2021-06-29 13:22:32.4167 INFO Fetching all the user from the storage
+2021-06-29 13:30:26.7908 INFO Fetching all the user from the storage
+2021-06-29 13:32:25.8217 INFO Fetching all the user from the storage
+2021-06-29 13:33:00.8359 INFO Creating a user to the storage
+2021-06-29 13:33:06.2054 INFO Fetching all the user from the storage
