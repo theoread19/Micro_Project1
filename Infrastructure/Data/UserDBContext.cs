@@ -27,8 +27,10 @@ namespace Infrastructure.Data
             if (!optionsBuilder.IsConfigured)
             {
                 string basePath = AppDomain.CurrentDomain.BaseDirectory;
+                string relativePath = @"..\..\..\..\UserProject";
+                string webPath = Path.GetFullPath(basePath + relativePath);
                 IConfigurationRoot configuration = new ConfigurationBuilder()
-                                                .SetBasePath(basePath)
+                                                .SetBasePath(webPath)
                                                 .AddJsonFile("appsettings.json")
                                                 .Build();
 
