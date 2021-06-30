@@ -16,13 +16,15 @@ namespace Test
     {
         private UserController _userController;
         private Mock<IUserService> _userService;
+        private Mock<IMessageService> _messageService;
         private Mock<ILoggerManager> _logger;
 
         public UserControllerTest()
         {
             this._userService = new Mock<IUserService>();
             this._logger = new Mock<ILoggerManager>();
-            this._userController = new UserController(this._userService.Object, this._logger.Object);
+            this._messageService = new Mock<IMessageService>();
+            this._userController = new UserController(this._userService.Object, this._logger.Object, this._messageService.Object);
         }
 
         [TestMethod]
@@ -73,6 +75,49 @@ namespace Test
             this._userController.DeleteUser(id);
 
             this._userService.Verify(m => m.Delete(id));
+        }
+
+
+        [TestMethod]
+        [DataRow(2)]
+        public void Get_Message_By_SenderId_Test(long id)
+        {
+            this._messageService.Setup(m => m.GetMessageBySenderId(id)).Returns(new List<MessageRequest>());
+
+            var result = this._userController.GetMessagesBySenderId(id);
+
+            this._messageService.Verify(m => m.GetMessageBySenderId(id));
+            result.Should().BeEquivalentTo(new List<MessageRequest>());
+
+        }
+
+        [TestMethod]
+        public void Send_Message_Test()
+        {
+            var req = new MessageRequest();
+
+            this._userController.SendMessage(req);
+
+            this._messageService.Verify(m => m.SendMessage(req));
+        }
+
+        [TestMethod]
+        public void Modify_Message_Test()
+        {
+            var req = new MessageRequest();
+
+            this._userController.ModifyMessage(req);
+
+            this._messageService.Verify(m => m.ModifiyMessage(req));
+        }
+
+        [TestMethod]
+        [DataRow(1)]
+        public void Remove_Message_Test(long id)
+        {
+            this._userController.RemoveMessage(id);
+
+            this._messageService.Verify(m => m.RemoveMessage(id));
         }
     }
 }
