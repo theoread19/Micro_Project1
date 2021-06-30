@@ -38,7 +38,7 @@ namespace Infrastructure.Repository
 
         public void Update(UserModel userModel)
         {
-            var std = Context.UserTable.Find(userModel.Id);
+            Context.UserTable.Find(userModel.Id);
             Context.UserTable.Update(userModel);
         }
 
