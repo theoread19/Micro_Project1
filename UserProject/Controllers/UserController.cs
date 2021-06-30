@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using UserProject.DTOs.Request;
 using UserProject.Services;
-
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace UserProject.Controllers
@@ -17,9 +17,11 @@ namespace UserProject.Controllers
     {
         private IUserService _userService;
         private ILoggerManager _loggerManager;
-        public UserController(IUserService userService, ILoggerManager loggerManager)
+        private IMessageService _messageService;
+        public UserController(IUserService userService, ILoggerManager loggerManager, IMessageService messageService)
         {
             this._userService = userService;
+            this._messageService = messageService;
             this._loggerManager = loggerManager;
         }
         // GET: api/<UserController>
@@ -35,7 +37,7 @@ namespace UserProject.Controllers
             {
                 throw new Exception("Exception while fetching all the user from the storage.");
             }
-           
+
         }
 
         // GET api/<UserController>/5
@@ -51,7 +53,7 @@ namespace UserProject.Controllers
             {
                 throw new Exception("Exception while fetching a user from the storage.");
             }
-            
+
         }
 
         // POST api/<UserController>
@@ -62,13 +64,13 @@ namespace UserProject.Controllers
             {
                 this._loggerManager.LogInfo("Creating a user to the storage");
                 this._userService.Insert(req);
-                
+
             }
             catch (Exception)
             {
                 throw new Exception("Exception while creating a news to the storage.");
             }
-            
+
         }
 
         // PUT api/<UserController>/
@@ -84,7 +86,7 @@ namespace UserProject.Controllers
             {
                 throw new Exception("Exception while updating a user to the storage.");
             }
-            
+
         }
 
         // DELETE api/<UserController>/5
@@ -100,7 +102,68 @@ namespace UserProject.Controllers
             {
                 throw new Exception("Exception while deleting a user to the storage.");
             }
-           
+
         }
+
+        [HttpGet("Message/sender={id}")]
+        public List<MessageRequest> GetMessagesBySenderId(long id)
+        {
+            try
+            {
+                this._loggerManager.LogInfo("Fetching all the message have sender id=" + id + " from the storage");
+                return this._messageService.GetMessageBySenderId(id);
+            }
+            catch (Exception)
+            {
+                throw new Exception("Exception while fetching all the message have sender id=" + id);
+            }
+
+        }
+
+        [HttpPost("Message")]
+        public void SendMessage(MessageRequest req)
+        {
+            try
+            {
+                this._loggerManager.LogInfo("Sending a message...");
+                this._messageService.SendMessage(req);
+            }
+            catch(Exception)
+            {
+                throw new Exception("Exception while Sending a message");
+            }
+            
+        }
+
+        [HttpPut("Message")]
+        public void ModifyMessage(MessageRequest req)
+        {
+            try
+            {
+                this._loggerManager.LogInfo("Modifying the message...");
+                this._messageService.ModifiyMessage(req);
+            }
+            catch (Exception)
+            {
+                throw new Exception("Exception while modifying the message");
+
+            }
+            
+        }
+
+        [HttpDelete("Message/id={id}")]
+        public void RemoveMessage(long id)
+        {
+            try
+            {
+                this._loggerManager.LogInfo("Removing the message...");
+                this._messageService.RemoveMessage(id);
+
+            }
+            catch (Exception)
+            {
+                throw new Exception("Exception while removing the message");
+            }
+        }    
     }
 }

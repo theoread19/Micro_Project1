@@ -49,12 +49,14 @@ namespace UserProject
 
             //service
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IMessageService, MessageService>();
             //
 
             services.AddSingleton<ILoggerManager, LoggerManager>();
 
             builder.RegisterType<UserRepository>().As<IUserService>();
             builder.RegisterType<UserService>().As<IUserService>();
+            builder.RegisterType<MessageService>().As<IMessageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
