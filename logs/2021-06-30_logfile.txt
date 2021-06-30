@@ -1,0 +1,1 @@
+2021-06-30 11:27:18.4613 INFO Fetching all the message have sender id=0 from the storage
