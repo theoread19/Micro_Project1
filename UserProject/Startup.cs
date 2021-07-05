@@ -20,6 +20,7 @@ using UserProject.Services;
 using UserProject.Services.iplm;
 using Infrastructure.Logging;
 using Domain.Models;
+using Confluent.Kafka;
 
 namespace UserProject
 {
@@ -36,6 +37,13 @@ namespace UserProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            //config kafka producer
+            var producerConfig = new ProducerConfig();
+            Configuration.Bind("producer", producerConfig);
+
+            services.AddSingleton<ProducerConfig>(producerConfig);
+
             services.AddControllers();
 
             services.AddSwaggerGen();
