@@ -1,7 +1,6 @@
 ﻿using Confluent.Kafka;
+using Infrastructure.Protobuf;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Infrastructure.Kafka.Producer
 {
@@ -18,12 +17,12 @@ namespace Infrastructure.Kafka.Producer
 
         public Object SendToKafka(byte[] data)
         {
-            using (var producer =
+            using (var producer =   
                  new ProducerBuilder<string, byte[]>(config).Build())
             {
                 try
                 {
-                    return producer.ProduceAsync(this._topic, new Message<string, byte[]> {Key = "message", Value = data })
+                        return producer.ProduceAsync(this._topic, new Message<string, byte[]> {Key = "message", Value = data })
                         .GetAwaiter()
                         .GetResult();
                 }

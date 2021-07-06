@@ -1,0 +1,16 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "UserProtoBufService";
+
+package UserProtoBuf;
+
+
+service UserProtoTest {
+	rpc TestUserProto (UserProtoReq) returns (UserProtoReq);
+}
+
+message UserProtoReq{
+	int64 userId = 1;
+	string fullname = 2;
+	string email = 3;
+}

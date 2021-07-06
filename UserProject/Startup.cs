@@ -21,6 +21,7 @@ using UserProject.Services.iplm;
 using Infrastructure.Logging;
 using Domain.Models;
 using Confluent.Kafka;
+using WebApiContrib.Core.Formatter.Protobuf;
 
 namespace UserProject
 {
@@ -44,8 +45,9 @@ namespace UserProject
 
             services.AddSingleton<ProducerConfig>(producerConfig);
 
-            services.AddControllers();
-
+            services.AddControllers()
+                .AddProtobufFormatters();
+            
             services.AddSwaggerGen();
 
             var builder = new ContainerBuilder();
