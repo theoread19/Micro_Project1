@@ -31,9 +31,11 @@ namespace Infrastructure.Repository
             return Context.UserTable.Find(Id);
         }
 
-        public void Insert(UserModel userModel)
+        public UserModel Insert(UserModel userModel)
         {
             Context.UserTable.Add(userModel);
+            Context.SaveChanges();
+            return userModel;
         }
 
         public void Update(UserModel userModel)

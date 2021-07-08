@@ -1,6 +1,7 @@
 ﻿using Confluent.Kafka;
-using Infrastructure.Protobuf;
+using Google.Protobuf;
 using System;
+using UserProtoBufService;
 
 namespace Infrastructure.Kafka.Producer
 {
@@ -15,14 +16,16 @@ namespace Infrastructure.Kafka.Producer
             this._topic = topic;
         }
 
-        public Object SendToKafka(byte[] data)
+        public Object SendToKafka(UserProtoReq data, string key)
         {
-            using (var producer =   
-                 new ProducerBuilder<string, byte[]>(config).Build())
+            using (var producer =
+                 new ProducerBuilder<string, UserProtoReq>(config)
+                 .SetValueSerializer(new UserSerializer())// ProtobufSerializer
+                 .Build())
             {
                 try
                 {
-                        return producer.ProduceAsync(this._topic, new Message<string, byte[]> {Key = "message", Value = data })
+                        return producer.ProduceAsync(this._topic, new Message<string, UserProtoReq> {Key = key, Value = data })
                         .GetAwaiter()
                         .GetResult();
                 }
@@ -30,9 +33,12 @@ namespace Infrastructure.Kafka.Producer
                 {
                     Console.WriteLine($"Oops, something went wrong: {e}");
                 }
+                finally
+                {
+                    producer.Flush();
+                }
             }
             return null;
-
         }
     }
 }
