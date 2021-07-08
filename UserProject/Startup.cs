@@ -22,6 +22,7 @@ using Infrastructure.Logging;
 using Domain.Models;
 using Confluent.Kafka;
 using WebApiContrib.Core.Formatter.Protobuf;
+using UserProject.CustomerExceptionMiddleware;
 
 namespace UserProject
 {
@@ -70,7 +71,7 @@ namespace UserProject
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
         {
             if (env.IsDevelopment())
             {
@@ -78,6 +79,8 @@ namespace UserProject
             }
 
             app.UseHttpsRedirection();
+
+            app.ConfigureExceptionHandler((LoggerManager)logger);
 
             app.UseRouting();
 

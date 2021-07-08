@@ -66,9 +66,9 @@ namespace UserProject.Controllers
                 this._userService.Insert(req);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new Exception("Exception while creating a news to the storage.");
+                throw new Exception("Exception while creating a news to the storage." + e);
             }
 
         }

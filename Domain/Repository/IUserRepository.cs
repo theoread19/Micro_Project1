@@ -9,7 +9,7 @@ namespace Domain.Repository
     {
         public List<UserModel> GetAll();
         public UserModel GetById(long Id);
-        public void Insert(UserModel userModel);
+        public UserModel Insert(UserModel userModel);
         public void Update(UserModel userModel);
         public void Delete(long id);
         public void SaveChange();
