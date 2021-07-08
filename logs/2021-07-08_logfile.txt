@@ -1,0 +1,41 @@
+2021-07-08 08:50:04.4609 INFO Creating a user to the storage
+2021-07-08 09:10:23.7840 INFO Creating a user to the storage
+2021-07-08 10:01:43.2270 INFO Creating a user to the storage
+2021-07-08 10:08:02.4750 INFO Creating a user to the storage
+2021-07-08 11:17:17.7778 INFO Creating a user to the storage
+2021-07-08 11:19:27.6801 INFO Creating a user to the storage
+2021-07-08 11:21:55.0388 INFO Creating a user to the storage
+2021-07-08 11:25:34.8961 INFO Creating a user to the storage
+2021-07-08 13:55:16.3065 INFO Creating a user to the storage
+2021-07-08 13:57:44.0379 INFO Creating a user to the storage
+2021-07-08 14:23:20.4182 INFO Creating a user to the storage
+2021-07-08 14:35:52.0687 INFO Creating a user to the storage
+2021-07-08 14:36:33.4637 INFO Creating a user to the storage
+2021-07-08 14:40:26.3530 INFO Creating a user to the storage
+2021-07-08 14:41:06.4524 INFO Creating a user to the storage
+2021-07-08 14:52:11.4625 INFO Creating a user to the storage
+2021-07-08 14:52:39.7452 INFO Creating a user to the storage
+2021-07-08 14:58:52.2901 INFO Creating a user to the storage
+2021-07-08 15:26:13.2980 INFO Creating a user to the storage
+2021-07-08 15:27:15.3180 INFO Creating a user to the storage
+2021-07-08 15:32:49.4231 INFO Creating a user to the storage
+2021-07-08 15:40:37.8991 INFO Fetching a user from the storage
+2021-07-08 15:40:45.7502 ERROR Something went wrong: System.Exception: Exception while fetching a user from the storage.
+   at UserProject.Controllers.UserController.GetUserById(Int64 id) in E:\C#\ASP.NET\Workspace\UserProject\UserProject\Controllers\UserController.cs:line 54
+   at lambda_method(Closure , Object , Object[] )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutor.Execute(Object target, Object[] parameters)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeActionMethodAsync()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeNextActionFilterAsync()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.<Invoke>g__Awaited|6_0(ExceptionHandlerMiddleware middleware, HttpContext context, Task task)
+2021-07-08 16:36:35.5430 INFO Creating a user to the storage
