@@ -13,12 +13,8 @@ namespace Infrastructure.Data
     public partial class UserDBContext : DbContext
     {
 
-        public UserDBContext()
-        {
-        }
 
-
-        public virtual DbSet<UserModel> UserTable { get; set; }
+        public virtual DbSet<UserModel> UserTable { get; set; } = null!;
 
         
 
@@ -26,7 +22,7 @@ namespace Infrastructure.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                string basePath = AppDomain.CurrentDomain.BaseDirectory;
+                string basePath = AppDomain.CurrentDomain.BaseDirectory!;
                 string relativePath = @"..\..\..\..\UserProject";
                 string webPath = Path.GetFullPath(basePath + relativePath);
                 IConfigurationRoot configuration = new ConfigurationBuilder()

@@ -20,7 +20,7 @@ namespace UserProject.Services.iplm
 
             var responseString = ApiCall.GetApi("https://localhost:44359/api/Message/senderId=" + id);
             JArray jsonResponse = JArray.Parse(responseString);
-            return jsonResponse.ToObject<List<MessageRequest>>();
+            return jsonResponse.ToObject<List<MessageRequest>>()!;
         }
 
         public void ModifiyMessage(MessageRequest req)

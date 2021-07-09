@@ -1,5 +1,4 @@
 ﻿using Domain.Models;
-using Infrastructure.Protobuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,13 +34,5 @@ namespace UserProject.DTOs.Converter
             return model;
         }
 
-        public UserProtobuf toProto(UserRequest req)
-        {
-            var proto = new UserProtobuf();
-            proto.Id = req.Id;
-            proto.Fullname = req.Fullname;
-            proto.Email = req.Email;
-            return proto;
-        }
     }
 }

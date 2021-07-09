@@ -1,5 +1,4 @@
 ﻿using Confluent.Kafka;
-using Google.Protobuf;
 using System;
 using UserProtoBufService;
 
@@ -31,14 +30,15 @@ namespace Infrastructure.Kafka.Producer
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Oops, something went wrong: {e}");
+                    throw new Exception($"Oops, something went wrong: {e}");
+                   
                 }
                 finally
                 {
                     producer.Flush();
                 }
             }
-            return null;
+            
         }
     }
 }

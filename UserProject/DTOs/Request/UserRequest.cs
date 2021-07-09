@@ -8,7 +8,7 @@ namespace UserProject.DTOs.Request
     public class UserRequest
     {
         public long Id { get; set; }
-        public string Fullname { get; set; }
-        public string Email { get; set; }
+        public string? Fullname { get; set; }
+        public string? Email { get; set; }
     }
 }
