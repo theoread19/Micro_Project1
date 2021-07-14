@@ -44,6 +44,9 @@ namespace Infrastructure.Data
 
                 e.HasKey(e => e.Id);
 
+                e.HasIndex(e => e.Username, "UQ_username")
+                    .IsUnique();
+
                 e.Property(e => e.Fullname)
                     .IsRequired()
                     .HasMaxLength(50)
@@ -52,6 +55,16 @@ namespace Infrastructure.Data
                 e.Property(e => e.Email)
                     .HasMaxLength(100)
                     .HasColumnName("email");
+
+                e.Property(e => e.Username)
+                    .IsRequired()
+                    .HasColumnName("username")
+                    .HasMaxLength(50);
+
+                e.Property(e => e.Password)
+                    .IsRequired()
+                    .HasColumnName("passsword")
+                    .HasMaxLength(50);
             });
 
            

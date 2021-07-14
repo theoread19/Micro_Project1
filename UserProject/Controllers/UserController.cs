@@ -7,17 +7,19 @@ using UserProject.DTOs.Request;
 using UserProject.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Authorization;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace UserProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
-        private IUserService _userService;
-        private ILoggerManager _loggerManager;
-        private IMessageService _messageService;
+        private readonly IUserService _userService;
+        private readonly ILoggerManager _loggerManager;
+        private readonly IMessageService _messageService;
         public UserController(IUserService userService, ILoggerManager loggerManager, IMessageService messageService)
         {
             this._userService = userService;

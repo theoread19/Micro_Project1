@@ -14,10 +14,10 @@ namespace Test
     [TestClass]
     public class UserControllerTest
     {
-        private UserController _userController;
-        private Mock<IUserService> _userService;
-        private Mock<IMessageService> _messageService;
-        private Mock<ILoggerManager> _logger;
+        private readonly UserController _userController;
+        private readonly Mock<IUserService> _userService;
+        private readonly Mock<IMessageService> _messageService;
+        private readonly Mock<ILoggerManager> _logger;
 
         public UserControllerTest()
         {
