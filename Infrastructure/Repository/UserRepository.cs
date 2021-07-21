@@ -48,5 +48,10 @@ namespace Infrastructure.Repository
         {
             Context.SaveChanges();
         }
+
+        public UserModel? GetByUsernameAndPassword(string username, string password)
+        {
+            return Context.UserTable.Where(m => m.Username == username && m.Password == password).FirstOrDefault();
+        }
     }
 }

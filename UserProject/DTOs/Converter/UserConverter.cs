@@ -16,6 +16,7 @@ namespace UserProject.DTOs.Converter
             req.Fullname = model.Fullname;
             req.Email = model.Email;
             req.Username = model.Username;
+            req.Role = model.Role;
             return req;
         }
 
@@ -26,6 +27,7 @@ namespace UserProject.DTOs.Converter
             model.Email = req.Email;
             model.Username = req.Username;
             model.Password = req.Password;
+            model.Role = req.Role;
             return model;
         }
 
@@ -34,6 +36,8 @@ namespace UserProject.DTOs.Converter
             model.Id = req.Id;
             model.Fullname = req.Fullname;
             model.Email = req.Email;
+            model.Role = req.Role;
+            model.Role = req.Role;
             return model;
         }
 

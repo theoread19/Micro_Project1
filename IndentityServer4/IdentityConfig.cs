@@ -4,12 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.IdentityConfigure
+namespace IdentityServer4
 {
     public class IdentityConfig
     {
+
+
+
+
         //Test user
-        public static List<TestUser> GetUsers()
+/*        public static List<TestUser> GetUsers()
         {
             return new List<TestUser>
             {
@@ -26,7 +30,7 @@ namespace Infrastructure.IdentityConfigure
                     Password = "password"
                 }
             };
-        }
+        }*/
 
         // Resources and Api want to protect
         public static IEnumerable<IdentityResource> IdentityResources =>
@@ -35,6 +39,7 @@ namespace Infrastructure.IdentityConfigure
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
+                new IdentityResource("roles", new[] { "role" })
             };
 
 
@@ -42,7 +47,7 @@ namespace Infrastructure.IdentityConfigure
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             {
-                new ApiScope("User"),
+                new ApiScope("api1"),
                 new ApiScope("scope2"),
             };
 
@@ -61,7 +66,7 @@ namespace Infrastructure.IdentityConfigure
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
 
-                    AllowedScopes = { "User" }
+                    AllowedScopes = { "api1" }
                 },
 
                 // OpenID Connect implicit flow client (MVC)
@@ -108,7 +113,7 @@ namespace Infrastructure.IdentityConfigure
                     {
                         new Secret("secret".Sha256())
                     },
-                    AllowedScopes = {"scope2" , "User" }
+                    AllowedScopes = {"api1" , "roles"}
                 }
             };
     }

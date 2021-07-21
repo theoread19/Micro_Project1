@@ -16,7 +16,10 @@ namespace Infrastructure.Data
 
         public virtual DbSet<UserModel> UserTable { get; set; } = null!;
 
-        
+        public UserDBContext()
+        {
+
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -65,6 +68,11 @@ namespace Infrastructure.Data
                     .IsRequired()
                     .HasColumnName("passsword")
                     .HasMaxLength(50);
+
+                e.Property(e => e.Role)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .HasColumnName("role");
             });
 
            

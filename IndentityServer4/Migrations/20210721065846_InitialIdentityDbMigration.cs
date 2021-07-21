@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace UserProject.Migrations
+namespace IndentityServer4.Migrations
 {
     public partial class InitialIdentityDbMigration : Migration
     {

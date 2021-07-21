@@ -10,6 +10,7 @@ namespace Domain.Repository
         public List<UserModel> GetAll();
         public UserModel GetById(long Id);
         public UserModel Insert(UserModel userModel);
+        public UserModel? GetByUsernameAndPassword(string username, string password);
         public void Update(UserModel userModel);
         public void Delete(long id);
         public void SaveChange();

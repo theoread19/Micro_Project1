@@ -1,7 +1,11 @@
 ﻿using Domain.Repository;
 using Infrastructure.Kafka.Producer;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using UserProject.DTOs.Converter;
 using UserProject.DTOs.Request;
 using UserProtoBufService;
@@ -76,6 +80,31 @@ namespace UserProject.Services.iplm
                 this._userRepository.Update(model);
                 this._userRepository.SaveChange();
             }
+        }
+
+        public UserRequest? Authenticate(string username, string password)
+        {
+            var model = this._userRepository.GetByUsernameAndPassword(username, password);
+            if (model != null) { 
+                var user = this._converter.toReq(model);
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes("secret");
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.Role)
+            }),
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                user.Token = tokenHandler.WriteToken(token);
+                return user;                
+            }
+            // return null if user not found
+            return null;
         }
     }
 }

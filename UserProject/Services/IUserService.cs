@@ -8,6 +8,7 @@ namespace UserProject.Services
 {
     public interface IUserService
     {
+        public UserRequest? Authenticate(string username, string password);
         public IEnumerable<List<UserRequest>> GetAll();
         public UserRequest GetById(long id);
         public void Insert(UserRequest req);

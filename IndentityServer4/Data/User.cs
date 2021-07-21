@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Domain.Models
+namespace IndentityServer4.Data
 {
-    public class UserModel
+    public class User : IdentityUser
     {
         public long Id { get; set; }
         public string? Fullname { get; set; }
