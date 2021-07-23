@@ -8,6 +8,7 @@ using IdentityServer4.EntityFramework.Mappers;
 using Infrastructure.IdentityConfigure;
 using Infrastructure.Logging;
 using Infrastructure.Repository;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -15,8 +16,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UserProject.CustomerExceptionMiddleware;
@@ -43,72 +46,21 @@ namespace UserProject
         {
             services.AddControllers()
                 .AddProtobufFormatters();
-                
-
-/*            var connectionstring = Configuration.GetConnectionString("DefaultConnection2");
-            var migrationAssemble = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-*/
-            //identity
-/*            services.AddIdentityServer()
-*//*                .AddInMemoryClients(IdentityConfig.Clients)
-                .AddInMemoryIdentityResources(IdentityConfig.IdentityResources)
-                .AddInMemoryApiScopes(IdentityConfig.ApiScopes)*//*
-                .AddTestUsers(IdentityConfig.GetUsers()) 
-                .AddConfigurationStore(option =>
-                {
-                    option.ConfigureDbContext = builder => builder.UseSqlServer(connectionstring, opt => opt.MigrationsAssembly(migrationAssemble));
-                })
-                .AddOperationalStore(option =>
-                {
-                    option.ConfigureDbContext = builder => builder.UseSqlServer(connectionstring, opt => opt.MigrationsAssembly(migrationAssemble));
-                })
-                .AddDeveloperSigningCredential();*/
-
 
             //api config
             services.AddAuthentication("Bearer")
-                .AddIdentityServerAuthentication("Bearer", option => 
+                .AddIdentityServerAuthentication("Bearer", option =>
                 {
                     
                     option.Authority = "https://localhost:44305";
                     option.RequireHttpsMetadata = false;
-                    option.ApiSecret = "secret";
+                    option.ApiSecret = "Secret";
                     option.ApiName = "api1";
-/*                    option.EnableCaching = true;
-                    option.CacheDuration = TimeSpan.FromMinutes(10);*/
-                   
 
                 });
 
-/*
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = "Cookies";
-                options.DefaultChallengeScheme = "oidc";
-            })
-                .AddCookie("Cookies")
-                .AddOpenIdConnect("oidc", options =>
-                {
-                    options.SignInScheme = "Cookies";
-
-                    options.Authority = "http://localhost:5001";
-                    options.RequireHttpsMetadata = false;
-
-                    options.ClientId = "mvc";
-                    options.SaveTokens = true;
-                });*/
-
-/*            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("ApiScope", policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("scope", new string[] { "User", "Scope2"});
-                });
-            });*/
-
-            services.AddAuthorization(options => options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "Admin")));
-            services.AddAuthorization(options => options.AddPolicy("Member", policy => policy.RequireClaim("Role", "Member")));
+            services.AddAuthorization(options => options.AddPolicy("Admin", policy => policy.RequireClaim("role", "Admin")));
+            services.AddAuthorization(options => options.AddPolicy("Member", policy => policy.RequireClaim("role", "Member")));
             //end api config
 
             //config kafka producer
@@ -121,13 +73,24 @@ namespace UserProject
             
             services.AddSwaggerGen(options => {
 
-                options.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "basic",
-                    In = ParameterLocation.Header,
-                    Description = "Basic Authorization header using the Bearer scheme."
+                    Type = SecuritySchemeType.OAuth2,
+
+                    Flows = new OpenApiOAuthFlows
+                    {
+                        Password = new OpenApiOAuthFlow
+                        {
+                            AuthorizationUrl = new Uri("https://localhost:44305/connect/authorize"),
+                            TokenUrl = new Uri("https://localhost:44305/connect/token"),
+                            Scopes = new Dictionary<string, string>
+                           {
+                               {"api1" , "My Api"},
+                               {"roles", "User Roles" }
+                           }
+                        }
+                    }
+
                 });
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -138,7 +101,7 @@ namespace UserProject
                                 Reference = new OpenApiReference
                                 {
                                     Type = ReferenceType.SecurityScheme,
-                                    Id = "basic"
+                                    Id = "Bearer"
                                 }
                             },
                             new string[] {}
@@ -185,8 +148,6 @@ namespace UserProject
             app.UseRouting();
 
 
-//            app.UseIdentityServer();
-
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -206,44 +167,10 @@ namespace UserProject
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 c.RoutePrefix = string.Empty;
+                c.OAuthClientId("ro.client");
+                c.OAuthClientSecret("Secret");
             });
         }
 
-        /*private void InitializeDatabase(IApplicationBuilder app)
-        {
-            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope())
-            {
-                serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
-
-                var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-                context.Database.Migrate();
-                if (!context.Clients.Any())
-                {
-                    foreach (var client in IdentityConfig.Clients)
-                    {
-                        context.Clients.Add(client.ToEntity());
-                    }
-                    context.SaveChanges();
-                }
-
-                if (!context.IdentityResources.Any())
-                {
-                    foreach (var resource in IdentityConfig.IdentityResources)
-                    {
-                        context.IdentityResources.Add(resource.ToEntity());
-                    }
-                    context.SaveChanges();
-                }
-
-                if (!context.ApiScopes.Any())
-                {
-                    foreach (var resource in IdentityConfig.ApiScopes)
-                    {
-                        context.ApiScopes.Add(resource.ToEntity());
-                    }
-                    context.SaveChanges();
-                }
-            }
-        }*/
     }
 }

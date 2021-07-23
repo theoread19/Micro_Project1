@@ -21,6 +21,11 @@ namespace Infrastructure.Data
 
         }
 
+        public UserDBContext(DbContextOptions<UserDBContext> options) : base(options)
+        {
+
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

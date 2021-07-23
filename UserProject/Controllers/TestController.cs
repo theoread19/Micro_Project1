@@ -11,7 +11,7 @@ namespace UserProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Member")]
+    [Authorize(Roles = "Admin")]
     public class TestController : ControllerBase
     {
         // GET: api/<TestController>
