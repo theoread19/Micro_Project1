@@ -14,7 +14,7 @@ namespace UserProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+//    [Authorize(Roles = "Admin")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -27,6 +27,7 @@ namespace UserProject.Controllers
             this._loggerManager = loggerManager;
         }
         // GET: api/<UserController>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IEnumerable<List<UserRequest>> GetAllUser()
         {
@@ -44,6 +45,7 @@ namespace UserProject.Controllers
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public UserRequest GetUserById(long id)
         {
             try

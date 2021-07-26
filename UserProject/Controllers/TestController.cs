@@ -11,17 +11,19 @@ namespace UserProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class TestController : ControllerBase
     {
         // GET: api/<TestController>
         [HttpGet]
+        [Authorize(Roles = "Member, Admin")]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
         }
 
         // GET api/<TestController>/5
+        [Authorize(Roles = "Member")]
         [HttpGet("{id}")]
         public string Get(int id)
         {
@@ -30,12 +32,14 @@ namespace UserProject.Controllers
 
         // POST api/<TestController>
         [HttpPost]
+        [Authorize(Roles = "Member")]
         public void Post([FromBody] string value)
         {
         }
 
         // PUT api/<TestController>/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Member")]
         public void Put(int id, [FromBody] string value)
         {
         }

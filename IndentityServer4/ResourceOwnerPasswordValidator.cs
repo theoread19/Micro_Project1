@@ -25,11 +25,7 @@ namespace IndentityServer4
         {
             _users = users;
             _clock = clock;
-        }    /// <summary>
-             ///  verification
-             /// </summary>
-             /// <param name="context"></param>
-             /// <returns></returns>
+        }    
         public Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {        //The user name and password of context.UserName, context.Password are used here to verify with database data
             if (_users.ValidateCredentials(context.UserName, context.Password))
@@ -38,7 +34,10 @@ namespace IndentityServer4
                                                                                //subjectId is the unique identifier of the user, generally the user id
                                                                                //authenticationMethod describes the authentication method of a custom authorization type 
                                                                                //authTime authorization time
-                                                                               //claims the user identity information unit that needs to be returned. Here we should add claims based on the user information we read from the database. If the role information is read from the database, then we should add it here. Only the necessary claims should be returned here.
+                                                                               //claims the user identity information unit that needs to be returned. Here we should add
+                                                                               //claims based on the user information we read from the database.
+                                                                               //If the role information is read from the database, then we should add it here.
+                                                                               //Only the necessary claims should be returned here.
                 context.Result = new GrantValidationResult(
                     user.SubjectId ?? throw new ArgumentException("Subject ID not set", nameof(user.SubjectId)),
                     OidcConstants.AuthenticationMethods.Password, _clock.UtcNow.UtcDateTime,

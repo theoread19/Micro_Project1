@@ -9,6 +9,7 @@ using Infrastructure.IdentityConfigure;
 using Infrastructure.Logging;
 using Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -20,6 +21,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using UserProject.CustomerExceptionMiddleware;
@@ -46,8 +48,9 @@ namespace UserProject
         {
             services.AddControllers()
                 .AddProtobufFormatters();
-
+            
             //api config
+
             services.AddAuthentication("Bearer")
                 .AddIdentityServerAuthentication("Bearer", option =>
                 {
@@ -55,12 +58,17 @@ namespace UserProject
                     option.Authority = "https://localhost:44305";
                     option.RequireHttpsMetadata = false;
                     option.ApiSecret = "Secret";
-                    option.ApiName = "api1";
+
 
                 });
-
-            services.AddAuthorization(options => options.AddPolicy("Admin", policy => policy.RequireClaim("role", "Admin")));
-            services.AddAuthorization(options => options.AddPolicy("Member", policy => policy.RequireClaim("role", "Member")));
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("myPolicy", builder =>
+                {
+                   //require api scope 
+                    builder.RequireScope("api1");
+                });
+            });
             //end api config
 
             //config kafka producer
@@ -71,44 +79,26 @@ namespace UserProject
 
             
             
-            services.AddSwaggerGen(options => {
-
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TheCodeBuzz-Service", Version = "v1" });
+                c.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
                 {
-                    Type = SecuritySchemeType.OAuth2,
-
-                    Flows = new OpenApiOAuthFlows
-                    {
-                        Password = new OpenApiOAuthFlow
-                        {
-                            AuthorizationUrl = new Uri("https://localhost:44305/connect/authorize"),
-                            TokenUrl = new Uri("https://localhost:44305/connect/token"),
-                            Scopes = new Dictionary<string, string>
-                           {
-                               {"api1" , "My Api"},
-                               {"roles", "User Roles" }
-                           }
-                        }
-                    }
-
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme.",
                 });
 
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                          new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Type = ReferenceType.SecurityScheme,
-                                    Id = "Bearer"
-                                }
-                            },
-                            new string[] {}
-                    }
-                });
+                //////Add Operation Specific Authorization///////
+                c.OperationFilter<AuthOperationFilter>();
+                ////////////////////////////////////////////////
 
-
+ /*               var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);*/
             });
 
             var builder = new ContainerBuilder();
@@ -134,7 +124,6 @@ namespace UserProject
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
         {
 
-//            InitializeDatabase(app);
 
             if (env.IsDevelopment())
             {
@@ -167,8 +156,8 @@ namespace UserProject
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 c.RoutePrefix = string.Empty;
-                c.OAuthClientId("ro.client");
-                c.OAuthClientSecret("Secret");
+/*                c.OAuthClientId("ro.client");
+                c.OAuthClientSecret("Secret");*/
             });
         }
 

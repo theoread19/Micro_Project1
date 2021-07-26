@@ -12,12 +12,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace IndentityServer4
 {
 	public class ProfileService : IProfileService
 	{
-		protected readonly Microsoft.Extensions.Logging.ILogger Logger;
+		protected readonly ILogger Logger;
 
 		protected readonly TestUserStore Users;
 

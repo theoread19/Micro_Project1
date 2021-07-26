@@ -48,14 +48,14 @@ namespace IndentityServer4
              *          Register your user class and dbcontext with aspnet core identity
              *          Tell IdentityServer to use AspNetIdentity*/
 
-
+/*
             services.AddEntityFrameworkSqlServer()
                    .AddDbContext<AppDbContext>(options =>
                        options.UseSqlServer(connectionstring));
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders();*/
 
 
 
@@ -67,14 +67,15 @@ namespace IndentityServer4
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
             })
-//                .AddInMemoryApiScopes(IdentityConfig.ApiScopes)
+                .AddInMemoryApiScopes(IdentityConfig.ApiScopes)
                 .AddInMemoryClients(IdentityConfig.Clients)
 //                .AddInMemoryIdentityResources(IdentityConfig.IdentityResources)
                 .AddTestUsers(IdentityConfig.GetUsers())
-                .AddInMemoryApiResources(IdentityConfig.GetApiResources())
+//                .AddInMemoryApiResources(IdentityConfig.GetApiResources())
                 .AddInMemoryIdentityResources(IdentityConfig.GetIdentityResourceResources())
-                .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>()
                 .AddProfileService<ProfileService>()
+                .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>()
+                
 //                .AddProfileService<ProfileService>()
  /*              .AddConfigurationStore(option =>
                {

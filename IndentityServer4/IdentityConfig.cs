@@ -16,20 +16,17 @@ namespace IdentityServer4
           {
               new TestUser
               {
-                  SubjectId = "a9ea0f25-b964-409f-bcce-c923266249b4",
+                  SubjectId = "1",
                   Username = "Mick",
                   Password = "MickPassword",
                   Claims = new List<Claim>
                   {
-                      new Claim("given_name", "Mick"),
-                      new Claim("family_name", "Mining"),
-
-                      new Claim("role", "Admin")
+                      new Claim(JwtClaimTypes.Role, "Admin")
                   }
               },
               new TestUser
               {
-                  SubjectId = "c95ddb8c-79ec-488a-a485-fe57a1462340",
+                  SubjectId = "2",
                   Username = "Jane",
                   Password = "JanePassword",
                   Claims = new List<Claim>
@@ -37,7 +34,7 @@ namespace IdentityServer4
                       new Claim("given_name", "Jane"),
                       new Claim("family_name", "Downing"),
                       new Claim("address", "Long Avenue 289"),
-                      new Claim("role", "Visitor")
+                      new Claim(JwtClaimTypes.Role, "Member")
                   }
               }
           };
@@ -58,22 +55,22 @@ namespace IdentityServer4
             };
         }
 
-        public static IEnumerable<ApiResource> GetApiResources()
+/*        public static IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>
-    {//                new ApiResource("api1", "My API")
-        new ApiResource("api1", "My API",new List<string>(){JwtClaimTypes.Role})
-    };
-        }
+            {
+                new ApiResource("api1", "My API",new List<string>(){JwtClaimTypes.Role})
+            };
+        }*/
 
-/*        public static IEnumerable<ApiScope> ApiScopes =>
+        public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             {
-                new ApiScope("api1"),
-                new ApiScope("scope2"),
-            };*/
+                new ApiScope("api1", new List<string>(){JwtClaimTypes.Role} )
+               // new ApiScope("scope2"),
+            };
 
-       
+
         public static IEnumerable<Client> Clients =>
             new Client[]
             {   
