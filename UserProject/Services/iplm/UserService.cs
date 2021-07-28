@@ -14,7 +14,7 @@ namespace UserProject.Services.iplm
 {
     public class UserService : IUserService
     {
-        private ProducerConfigure _configure = new ProducerConfigure("test5");
+        private ProducerConfigure _configure = new ProducerConfigure("message");
         private IUserRepository _userRepository;
         private readonly UserConverter _converter = new UserConverter();
         public UserService(IUserRepository userRepository)
@@ -82,7 +82,7 @@ namespace UserProject.Services.iplm
             }
         }
 
-        public UserRequest? Authenticate(string username, string password)
+/*        public UserRequest? Authenticate(string username, string password)
         {
             var model = this._userRepository.GetByUsernameAndPassword(username, password);
             if (model != null) { 
@@ -105,6 +105,6 @@ namespace UserProject.Services.iplm
             }
             // return null if user not found
             return null;
-        }
+        }*/
     }
 }

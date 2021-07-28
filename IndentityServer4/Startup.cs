@@ -3,7 +3,6 @@ using IdentityServer4;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Services;
-using IndentityServer4.Data;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,7 +38,6 @@ namespace IndentityServer4
             services.AddControllers();
 
             var connectionstring = Configuration.GetConnectionString("DefaultConnection");
-            var connectionstring2 = Configuration.GetConnectionString("DefaultConnection2");
             var migrationAssemble = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             //steps for get user from exit Database for Identityserver4
@@ -67,35 +65,29 @@ namespace IndentityServer4
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
             })
-                .AddInMemoryApiScopes(IdentityConfig.ApiScopes)
-                .AddInMemoryClients(IdentityConfig.Clients)
-//                .AddInMemoryIdentityResources(IdentityConfig.IdentityResources)
+//                .AddInMemoryApiScopes(IdentityConfig.ApiScopes)
+//                .AddInMemoryClients(IdentityConfig.Clients)
                 .AddTestUsers(IdentityConfig.GetUsers())
-//                .AddInMemoryApiResources(IdentityConfig.GetApiResources())
-                .AddInMemoryIdentityResources(IdentityConfig.GetIdentityResourceResources())
-                .AddProfileService<ProfileService>()
-                .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>()
-                
-//                .AddProfileService<ProfileService>()
- /*              .AddConfigurationStore(option =>
+//                .AddInMemoryIdentityResources(IdentityConfig.GetIdentityResourceResources())
+                .AddProfileService<ProfileService>() // load information for us according to the claim type required by the request.
+                .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>() // define our own verification logic.
+               .AddConfigurationStore(option =>
                {
                    option.ConfigureDbContext = builder => builder.UseSqlServer(connectionstring, opt => opt.MigrationsAssembly(migrationAssemble));
                })
                .AddOperationalStore(option =>
                {
                    option.ConfigureDbContext = builder => builder.UseSqlServer(connectionstring, opt => opt.MigrationsAssembly(migrationAssemble));
-               })*/
-               //.AddAspNetIdentity<User>()
+               })
                .AddDeveloperSigningCredential();
-            
-//            services.AddScoped<IProfileService, ProfileService>();
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
-            //InitializeDatabase(app);
+//            InitializeDatabase(app);
 
             if (env.IsDevelopment())
             {
@@ -115,7 +107,7 @@ namespace IndentityServer4
                 endpoints.MapControllers();
             });
         }
-/*
+
         private void InitializeDatabase(IApplicationBuilder app)
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()!.CreateScope())
@@ -135,7 +127,7 @@ namespace IndentityServer4
 
                 if (!context.IdentityResources.Any())
                 {
-                    foreach (var resource in IdentityConfig.IdentityResources)
+                    foreach (var resource in IdentityConfig.GetIdentityResourceResources())
                     {
                         context.IdentityResources.Add(resource.ToEntity());
                     }
@@ -150,9 +142,9 @@ namespace IndentityServer4
                     }
                     context.SaveChanges();
                 }
-                
-                
+
+
             }
-        }*/
+        }
     }
 }

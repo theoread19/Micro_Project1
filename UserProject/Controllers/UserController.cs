@@ -14,7 +14,6 @@ namespace UserProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-//    [Authorize(Roles = "Admin")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -79,6 +78,7 @@ namespace UserProject.Controllers
 
         // PUT api/<UserController>/
         [HttpPut]
+        [Authorize(Roles = "Member, Admin")]
         public void UpdateUser([FromBody] UserRequest req)
         {
             try
@@ -95,6 +95,7 @@ namespace UserProject.Controllers
 
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
+        [Authorize(Roles ="Admin")]
         public void DeleteUser(long id)
         {
             try
@@ -110,6 +111,7 @@ namespace UserProject.Controllers
         }
 
         [HttpGet("Message/sender={id}")]
+        [Authorize(Roles = "Member, Admin")]
         public List<MessageRequest> GetMessagesBySenderId(long id)
         {
             try
@@ -125,6 +127,7 @@ namespace UserProject.Controllers
         }
 
         [HttpPost("Message")]
+        [Authorize(Roles = "Member, Admin")]
         public void SendMessage(MessageRequest req)
         {
             try
@@ -140,6 +143,7 @@ namespace UserProject.Controllers
         }
 
         [HttpPut("Message")]
+        [Authorize(Roles = "Member, Admin")]
         public void ModifyMessage(MessageRequest req)
         {
             try
@@ -156,6 +160,7 @@ namespace UserProject.Controllers
         }
 
         [HttpDelete("Message/id={id}")]
+        [Authorize(Roles = "Member, Admin")]
         public void RemoveMessage(long id)
         {
             try

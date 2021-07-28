@@ -5,7 +5,6 @@ using Domain.Logging;
 using Domain.Repository;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
-using Infrastructure.IdentityConfigure;
 using Infrastructure.Logging;
 using Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication;
@@ -96,9 +95,6 @@ namespace UserProject
                 c.OperationFilter<AuthOperationFilter>();
                 ////////////////////////////////////////////////
 
- /*               var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);*/
             });
 
             var builder = new ContainerBuilder();
@@ -156,8 +152,6 @@ namespace UserProject
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 c.RoutePrefix = string.Empty;
-/*                c.OAuthClientId("ro.client");
-                c.OAuthClientSecret("Secret");*/
             });
         }
 

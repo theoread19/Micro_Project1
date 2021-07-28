@@ -1,0 +1,4 @@
+2021-07-28 08:39:05.6637 INFO Fetching all the user from the storage
+2021-07-28 10:00:42.1797 INFO Creating a user to the storage
+2021-07-28 10:03:26.6990 INFO Creating a user to the storage
+2021-07-28 10:07:58.6517 INFO Sending a message...
