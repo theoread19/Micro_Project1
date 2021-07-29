@@ -9,5 +9,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ProjectCore" Version="1.0.5" />
+  </ItemGroup>
+
 
 </Project>

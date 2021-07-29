@@ -24,7 +24,7 @@ namespace UserProject.Services.iplm
         public void Delete(long id)
         {
             this._userRepository.Delete(id);
-            this._userRepository.SaveChange();
+            this._userRepository.Save();
         }
 
         public IEnumerable<List<UserRequest>> GetAll()
@@ -63,7 +63,7 @@ namespace UserProject.Services.iplm
                 };
 
                 _configure.SendToKafka(data, "insert");
-                this._userRepository.SaveChange();
+                this._userRepository.Save();
             }
         }
 
@@ -78,7 +78,7 @@ namespace UserProject.Services.iplm
                 var model = this._userRepository.GetById(req.Id);
                 _converter.toModel(req, ref model);
                 this._userRepository.Update(model);
-                this._userRepository.SaveChange();
+                this._userRepository.Save();
             }
         }
 

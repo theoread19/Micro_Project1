@@ -1,5 +1,4 @@
-﻿using Domain.Logging;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using UserProject.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Authorization;
+using ProjectCore.Logging;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace UserProject.Controllers
@@ -17,9 +17,9 @@ namespace UserProject.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly ILoggerManager _loggerManager;
+        private readonly ILogger _loggerManager;
         private readonly IMessageService _messageService;
-        public UserController(IUserService userService, ILoggerManager loggerManager, IMessageService messageService)
+        public UserController(IUserService userService, ILogger loggerManager, IMessageService messageService)
         {
             this._userService = userService;
             this._messageService = messageService;

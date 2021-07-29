@@ -1,50 +1,35 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Confluent.Kafka;
-using Domain.Logging;
 using Domain.Repository;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
-using Infrastructure.Logging;
 using Infrastructure.Repository;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using UserProject.CustomerExceptionMiddleware;
+using ProjectCore.Logging;
+using ProjectCore.Startup;
 using UserProject.Services;
 using UserProject.Services.iplm;
 using WebApiContrib.Core.Formatter.Protobuf;
 
 namespace UserProject
 {
-    public class Startup
+    public class Startup : BaseStartup
     {
-
-
-        public IConfiguration Configuration { get; }
         public IContainer ApplicationContainer { get; private set; } = null!;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration) : base(configuration)
         {
-            Configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public override void ConfigureServices(IServiceCollection services)
         {
+            base.ConfigureServices(services);
             services.AddControllers()
                 .AddProtobufFormatters();
             
@@ -109,7 +94,7 @@ namespace UserProject
             services.AddScoped<IMessageService, MessageService>();
             //
 
-            services.AddSingleton<ILoggerManager, LoggerManager>();
+//            services.AddSingleton<ILoggerManager, LoggerManager>();
 
             builder.RegisterType<UserRepository>().As<IUserService>();
             builder.RegisterType<UserService>().As<IUserService>();
@@ -117,11 +102,11 @@ namespace UserProject
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
+        public override void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger logger)
         {
 
-
-            if (env.IsDevelopment())
+            base.Configure(app, env, logger);
+            /*if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -132,6 +117,7 @@ namespace UserProject
 
             app.UseRouting();
 
+            app.UseAuthorization();*/
 
             app.UseAuthentication();
             app.UseAuthorization();

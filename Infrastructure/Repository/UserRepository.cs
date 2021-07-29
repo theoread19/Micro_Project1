@@ -1,57 +1,32 @@
 ﻿using Domain.Models;
 using Domain.Repository;
 using Infrastructure.Data;
+using ProjectCore.Repository.Impl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Infrastructure.Repository
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : BaseRepository<UserModel>, IUserRepository 
     {
-        private UserDBContext Context;
-        public UserRepository()
+        private UserDBContext _context;
+        public UserRepository() : base(new UserDBContext())
         {
-            Context = new UserDBContext();
-        }
-        public void Delete(long Id)
-        {
-            var std = Context.UserTable.Find(Id);
-            Context.Remove(std);
-        }
-
-        public List<UserModel> GetAll()
-        {
-            var model = Context.UserTable;
-            return model.ToList();
-        }
-
-        public UserModel GetById(long Id)
-        {
-            return Context.UserTable.Find(Id);
+            
+            this._context = new UserDBContext();
         }
 
         public UserModel Insert(UserModel userModel)
         {
-            Context.UserTable.Add(userModel);
-            Context.SaveChanges();
+            this._context.UserTable.Add(userModel);
+            this._context.SaveChanges();
             return userModel;
-        }
-
-        public void Update(UserModel userModel)
-        {
-            Context.UserTable.Find(userModel.Id);
-            Context.UserTable.Update(userModel);
-        }
-
-        public void SaveChange()
-        {
-            Context.SaveChanges();
         }
 
         public UserModel? GetByUsernameAndPassword(string username, string password)
         {
-            return Context.UserTable.Where(m => m.Username == username && m.Password == password).FirstOrDefault();
+            return this._context.UserTable.Where(m => m.Username == username && m.Password == password).FirstOrDefault();
         }
     }
 }
