@@ -1,11 +1,16 @@
 ﻿using Domain.Repository;
+using ExcelDataReader;
 using Infrastructure.Kafka.Producer;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using UserProject.DTOs.Converter;
 using UserProject.DTOs.Request;
 using UserProtoBufService;
@@ -82,29 +87,80 @@ namespace UserProject.Services.iplm
             }
         }
 
-/*        public UserRequest? Authenticate(string username, string password)
+        public async Task InsertByExcel(IFormFile file)
         {
-            var model = this._userRepository.GetByUsernameAndPassword(username, password);
-            if (model != null) { 
-                var user = this._converter.toReq(model);
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes("secret");
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new Claim[]
+            //check file not null
+            if (file == null || file.Length == 0)
+                throw new Exception( "File Not Selected");
+
+            //check if file is excel or not
+            string fileExtension = Path.GetExtension(file.FileName);
+            if (fileExtension != ".xls" && fileExtension != ".xlsx")
+                throw new Exception("File Not Compatible");
+
+            var rootFolder = "Upload\\files\\test";
+
+            //create Directory if not exist
+            var pathBuilt = Path.Combine(Directory.GetCurrentDirectory(), rootFolder);
+            if (!Directory.Exists(rootFolder))
             {
-                new Claim(ClaimTypes.Name, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.Role)
-            }),
-                    Expires = DateTime.UtcNow.AddDays(7),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                user.Token = tokenHandler.WriteToken(token);
-                return user;                
+                Directory.CreateDirectory(rootFolder);
             }
-            // return null if user not found
-            return null;
-        }*/
+
+            var fileName = file.FileName;
+            var filePath = Path.Combine(rootFolder, fileName);
+            var fileLocation = new FileInfo(filePath);
+            //upload file
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            using (ExcelPackage package = new ExcelPackage(fileLocation))
+            {
+                //LicenseContext parameter must be set
+                //For more details: https://epplussoftware.com/docs/5.1/articles/readme.html
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                //get first sheet
+                //or Worksheets["sheet1"]
+                ExcelWorksheet workSheet = package.Workbook.Worksheets.First();
+
+                int totalRows = workSheet.Dimension.Rows;
+
+                var DataList = new List<UserRequest>();
+
+                for (int i = 1; i <= totalRows; i++)
+                {
+                    var req = new UserRequest
+                    {
+                        Fullname = workSheet.Cells[i, 1].Value.ToString(),
+                        Email = workSheet.Cells[i, 2].Value.ToString(),
+                        Username = workSheet.Cells[i, 3].Value.ToString(),
+                        Password = workSheet.Cells[i, 4].Value.ToString(),
+                        Role = workSheet.Cells[i, 5].Value.ToString()
+                    };
+                    this.Insert(req);
+                }
+            }
+            await Task.CompletedTask;
+        }
+
+        public MemoryStream ExportDBToExcel(string nameFile)
+        {
+            var table = this._userRepository.GetAll();
+            var stream = new MemoryStream();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage(stream))
+            {
+                
+
+                var workSheet = package.Workbook.Worksheets.Add("Sheet1");
+                workSheet.Cells.LoadFromCollection(table, true);
+                package.Save();
+            }
+            stream.Position = 0;
+            return stream;
+        }
     }
 }

@@ -4,10 +4,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UserProject.DTOs.Request;
 using UserProject.Services;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+
 using Microsoft.AspNetCore.Authorization;
 using ProjectCore.Logging;
+using System.Net.Http;
+using System.Data;
+using ExcelDataReader;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace UserProject.Controllers
@@ -26,7 +30,7 @@ namespace UserProject.Controllers
             this._loggerManager = loggerManager;
         }
         // GET: api/<UserController>
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet]
         public IEnumerable<List<UserRequest>> GetAllUser()
         {
@@ -173,6 +177,40 @@ namespace UserProject.Controllers
             {
                 throw new Exception("Exception while removing the message");
             }
-        }    
+        }
+
+        [HttpPost("ExcelReader")]
+        public async Task<IActionResult> ReadFile(IFormFile file)
+        {
+            try
+            {
+                await this._userService.InsertByExcel(file);
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error");
+            }
+
+            return Ok();
+        }
+
+        [HttpGet("Export")]
+        public async Task<IActionResult> ExportFile(string nameFile)
+        {
+            try
+            {
+                await Task.Yield();
+                var stream = this._userService.ExportDBToExcel(nameFile);
+                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", nameFile + ".xlsx");
+                
+            }
+            catch
+            {
+                throw new Exception("Error");
+            }
+
+            
+        }
+
     }
 }
