@@ -12,6 +12,9 @@ using System.Data;
 using ExcelDataReader;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text;
+using Newtonsoft.Json;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace UserProject.Controllers
@@ -23,8 +26,11 @@ namespace UserProject.Controllers
         private readonly IUserService _userService;
         private readonly ILogger _loggerManager;
         private readonly IMessageService _messageService;
-        public UserController(IUserService userService, ILogger loggerManager, IMessageService messageService)
+        private IDistributedCache _distributedCache;
+
+        public UserController(IUserService userService, ILogger loggerManager, IMessageService messageService, IDistributedCache distributedCache)
         {
+//            this._distributedCache = distributedCache;
             this._userService = userService;
             this._messageService = messageService;
             this._loggerManager = loggerManager;
@@ -32,12 +38,31 @@ namespace UserProject.Controllers
         // GET: api/<UserController>
         //[Authorize(Roles = "Admin")]
         [HttpGet]
-        public IEnumerable<List<UserRequest>> GetAllUser()
+        public async Task<IActionResult> GetAllUserAsync()
         {
             try
             {
+/*                var cacheKey = "weatherList";
+                string serializedList;
+                IEnumerable<List<UserRequest>> reqs;
+                var redisList = await _distributedCache.GetAsync(cacheKey);
+                if (redisList != null)
+                {
+                    serializedList = Encoding.UTF8.GetString(redisList);
+                    reqs = JsonConvert.DeserializeObject<IEnumerable<List<UserRequest>>>(serializedList)!;
+                }
+                else
+                {
+                    reqs = this._userService.GetAllAsync();
+                    serializedList = JsonConvert.SerializeObject(reqs);
+                    redisList = Encoding.UTF8.GetBytes(serializedList);
+                    var options = new DistributedCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddMinutes(10)).SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                    await _distributedCache.SetAsync(cacheKey, redisList, options);
+                }*/
+
                 this._loggerManager.LogInfo("Fetching all the user from the storage");
-                return this._userService.GetAll();
+                var reqs = await this._userService.GetAllAsync();
+                return Ok(reqs);
             }
             catch (Exception)
             {

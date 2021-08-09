@@ -1,0 +1,9 @@
+2021-08-05 16:05:01.6946 INFO Creating a user to the storage
+2021-08-05 16:19:17.3272 INFO Fetching all the user from the storage
+2021-08-05 16:29:39.4175 INFO Fetching all the user from the storage
+2021-08-05 16:33:18.0086 INFO Creating a user to the storage
+2021-08-05 16:35:34.9926 INFO Fetching all the user from the storage
+2021-08-05 16:37:05.5595 INFO Updating a user to the storage
+2021-08-05 16:39:44.1203 INFO Fetching a user from the storage
+2021-08-05 16:51:37.3660 INFO Deleting a the user to the storage
+2021-08-05 16:54:30.4297 INFO Sending a message...

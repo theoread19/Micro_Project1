@@ -3,6 +3,8 @@ using ExcelDataReader;
 using Infrastructure.Kafka.Producer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using UserProject.DTOs.Converter;
 using UserProject.DTOs.Request;
@@ -21,9 +24,11 @@ namespace UserProject.Services.iplm
     {
         private ProducerConfigure _configure = new ProducerConfigure("message");
         private IUserRepository _userRepository;
+        private IDistributedCache _distributedCache;
         private readonly UserConverter _converter = new UserConverter();
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IDistributedCache distributedCache)
         {
+            this._distributedCache = distributedCache;
             this._userRepository = userRepository;
         }
         public void Delete(long id)
@@ -32,18 +37,44 @@ namespace UserProject.Services.iplm
             this._userRepository.Save();
         }
 
-        public IEnumerable<List<UserRequest>> GetAll()
+        public async Task<List<UserRequest>> GetAllAsync()
         {
-            var model = this._userRepository.GetAll();
+            var cacheKey = "userList";
+            string serializedList;
             List<UserRequest> reqs = new List<UserRequest>();
-            foreach(var item in model)
+            var redisList = await _distributedCache.GetAsync(cacheKey);
+            if (redisList != null)
             {
-                UserRequest req = new UserRequest();
-                req = _converter.toReq(item);
-                reqs.Add(req);
+                serializedList = Encoding.UTF8.GetString(redisList);
+                reqs = JsonConvert.DeserializeObject<List<UserRequest>>(serializedList)!;
+            }
+            else
+            {
+                var model = this._userRepository.GetAll();
+                //List<UserRequest> reqs = new List<UserRequest>();
+                foreach (var item in model)
+                {
+                    UserRequest req = new UserRequest();
+                    req = _converter.toReq(item);
+                    reqs.Add(req);
+                }
+                serializedList = JsonConvert.SerializeObject(reqs);
+                redisList = Encoding.UTF8.GetBytes(serializedList);
+                var options = new DistributedCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddMinutes(10)).SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                await _distributedCache.SetAsync(cacheKey, redisList, options);
             }
 
-            yield return reqs;
+            return reqs;
+            /*            var model = this._userRepository.GetAll();
+                        List<UserRequest> reqs = new List<UserRequest>();
+                        foreach(var item in model)
+                        {
+                            UserRequest req = new UserRequest();
+                            req = _converter.toReq(item);
+                            reqs.Add(req);
+                        }
+
+                        yield return reqs;*/
         }
 
         public UserRequest GetById(long id)
@@ -91,7 +122,7 @@ namespace UserProject.Services.iplm
         {
             //check file not null
             if (file == null || file.Length == 0)
-                throw new Exception( "File Not Selected");
+                throw new Exception("File Not Selected");
 
             //check if file is excel or not
             string fileExtension = Path.GetExtension(file.FileName);
@@ -153,7 +184,7 @@ namespace UserProject.Services.iplm
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (var package = new ExcelPackage(stream))
             {
-                
+
 
                 var workSheet = package.Workbook.Worksheets.Add("Sheet1");
                 workSheet.Cells.LoadFromCollection(table, true);

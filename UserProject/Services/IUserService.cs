@@ -12,7 +12,7 @@ namespace UserProject.Services
     public interface IUserService
     {
 //        public UserRequest? Authenticate(string username, string password);
-        public IEnumerable<List<UserRequest>> GetAll();
+        public Task<List<UserRequest>> GetAllAsync();
         public UserRequest GetById(long id);
         public Task InsertByExcel(IFormFile file);
         public MemoryStream ExportDBToExcel(string nameFile);

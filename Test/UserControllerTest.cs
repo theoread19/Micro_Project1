@@ -1,10 +1,10 @@
-﻿using Domain.Logging;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ProjectCore.Logging;
 using UserProject.Controllers;
 using UserProject.DTOs.Request;
 using UserProject.Services;
@@ -17,12 +17,12 @@ namespace Test
         private readonly UserController _userController;
         private readonly Mock<IUserService> _userService;
         private readonly Mock<IMessageService> _messageService;
-        private readonly Mock<ILoggerManager> _logger;
+        private readonly Mock<ILogger> _logger;
 
         public UserControllerTest()
         {
             this._userService = new Mock<IUserService>();
-            this._logger = new Mock<ILoggerManager>();
+            this._logger = new Mock<ILogger>();
             this._messageService = new Mock<IMessageService>();
             this._userController = new UserController(this._userService.Object, this._logger.Object, this._messageService.Object);
         }
@@ -30,9 +30,9 @@ namespace Test
         [TestMethod]
         public void Get_All_User_Test()
         {
-            var result = this._userController.GetAllUser();
+            var result = this._userController.GetAllUserAsync();
 
-            this._userService.Verify(m => m.GetAll());
+            this._userService.Verify(m => m.GetAllAsync());
             result.Should().BeEquivalentTo(new List<UserRequest>());                        
         }
 

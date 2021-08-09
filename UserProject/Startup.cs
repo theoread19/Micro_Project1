@@ -84,6 +84,12 @@ namespace UserProject
 
             });
 
+            //redis cache
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost:6379";
+            });
+
             var builder = new ContainerBuilder();
             builder.Populate(services);
 
